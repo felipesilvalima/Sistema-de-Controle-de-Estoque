@@ -49,3 +49,7 @@ Este projeto é um **sistema de gerenciamento de estoque** desenvolvido em lingu
 3. Compile e execute:
    gcc estoque.c -o estoque/
 ./estoque
+
+👨‍💻 Autor Felipe Silva Lima
+📧 felipesilvalima200@gmail.com
+🔗 www.linkedin.com/in/ felipesilvalima2030
