@@ -30,13 +30,13 @@ struct Usuarios
 int main()
 {
     // Declaração das funções usadas no programa
-    int CadastrarProdutos(int totalProduto,int produto_encontrado, int fornecedorEncontrado, int receber_total_fornecedores, char escolha_fornecedor[30], int sair,struct Produto *pd);
-    void entradaEstoque(int opcao, int receber_total_produtos, int buscarProduto, int produto_encontrado, int receberQuantidade, struct Produto *pd);
-    void saidaEstoque(int opcao, int receber_total_produtos, int produto_encontrado, int buscarProduto, int receberQuantidade, struct Produto *pd);
-    void relatorios(int fornecedorEncontrado, int sair, int receber_total_produtos, int totalFornecedor, char escolha_fornecedor[30], int buscarProduto, int produto_encontrado, struct Produto *pd );
+    int CadastrarProdutos(int receber_novo_total_cadastro,int totalProduto,int produto_encontrado, int fornecedorEncontrado, int receber_total_fornecedores, char escolha_fornecedor[30], int sair,struct Produto *pd);
+    void entradaEstoque(int opcao, int receber_novo_total_cadastro, int buscarProduto, int produto_encontrado, int receberQuantidade, struct Produto *pd);
+    void saidaEstoque(int opcao, int receber_novo_total_cadastro, int produto_encontrado, int buscarProduto, int receberQuantidade, struct Produto *pd);
+    void relatorios(int fornecedorEncontrado, int sair, int receber_novo_total_cadastro, int totalFornecedor, char escolha_fornecedor[30], int buscarProduto, int produto_encontrado, struct Produto *pd );
     int cadastrarFornecedores(int c, int sair, int receber_novo_total_fornecedores, int produto_encontrado, int totalFornecedor, int opcao, struct Produto *pd);
     void gerenciamentoUsuario(int sair, char admin[50], char senha_admin[50], int opcao, int total_cadastro_usuarios, int encontrar_usuario, int editar, char ultimo_usuario[40], int receberInicio, struct Usuarios *user);
-    void alertaEstoque(int sair, int produto_encontrado, int receber_total_produtos, struct Produto *pd);
+    void alertaEstoque(int sair, int produto_encontrado, int receber_novo_total_cadastro, struct Produto *pd);
 
     // Credenciais de administrador definidas via macro
     #define ADMIN "admin"
@@ -68,6 +68,7 @@ int main()
     int receber_total_produtos = 0;
     int receber_total_fornecedores = 0;
     int receber_novo_total_fornecedores = 0;
+    int receber_novo_total_cadastro = 0;
     // Declaração das estruturas para produtos e usuários
     struct Produto pd;
     struct Usuarios user;
@@ -118,22 +119,23 @@ int main()
                     // mesmo que as funções executem ações somente se o parâmetro "escolher" corresponder
                 if(escolher == 1)
                 {
-                    receber_total_produtos =  CadastrarProdutos(totalProduto,produto_encontrado,fornecedorEncontrado, receber_total_fornecedores, escolha_fornecedor, sair, &pd);
+                    receber_total_produtos =  CadastrarProdutos(receber_novo_total_cadastro,totalProduto,produto_encontrado,fornecedorEncontrado, receber_total_fornecedores, escolha_fornecedor, sair, &pd);
+                    receber_novo_total_cadastro += receber_total_produtos;
                 }
 
                 if(escolher == 2)
                 {
-                    entradaEstoque(opcao, receber_total_produtos,  buscarProduto, produto_encontrado,receberQuantidade, &pd);
+                    entradaEstoque(opcao, receber_novo_total_cadastro,  buscarProduto, produto_encontrado,receberQuantidade, &pd);
                 }
 
                 if(escolher == 3)
                 {
-                    saidaEstoque(opcao, receber_total_produtos,  produto_encontrado,  buscarProduto,  receberQuantidade, &pd);
+                    saidaEstoque(opcao, receber_novo_total_cadastro,  produto_encontrado,  buscarProduto,  receberQuantidade, &pd);
                 }
 
                 if(escolher == 4)
                 {
-                    relatorios(fornecedorEncontrado,  sair,  receber_total_produtos, receber_total_fornecedores,  escolha_fornecedor,  buscarProduto,  produto_encontrado, &pd );
+                    relatorios(fornecedorEncontrado,  sair,  receber_novo_total_cadastro, receber_total_fornecedores,  escolha_fornecedor,  buscarProduto,  produto_encontrado, &pd );
                 }
 
                 if(escolher == 5)
@@ -149,7 +151,7 @@ int main()
 
                 if(escolher == 7)
                 {
-                    alertaEstoque(sair,  produto_encontrado,  receber_total_produtos, &pd);
+                    alertaEstoque(sair,  produto_encontrado,  receber_novo_total_cadastro, &pd);
                 }
 
                     // Se opção for 8, sai do menu e programa
@@ -179,7 +181,7 @@ int main()
 
 
 
-int CadastrarProdutos(int totalProduto, int produto_encontrado, 
+int CadastrarProdutos(int receber_novo_total_cadastro, int totalProduto, int produto_encontrado, 
                       int fornecedorEncontrado, int receber_total_fornecedores, 
                       char escolha_fornecedor[30], int sair, struct Produto *pd)
 {
@@ -189,7 +191,7 @@ int CadastrarProdutos(int totalProduto, int produto_encontrado,
         printf("--------------CADASTRAR PRODUTO-------------------------\n\n");
 
         // Loop para cadastrar até MAX_TOTAL produtos
-        for (int i = 0; i < MAX_TOTAL; i++)
+        for (int i = receber_novo_total_cadastro; i < MAX_TOTAL; i++)
         {
             produto_encontrado = 0;      // Reseta a flag para indicar se existe fornecedor
             fornecedorEncontrado = 0;    // Reseta a flag para indicar se o fornecedor foi encontrado
@@ -278,7 +280,11 @@ int CadastrarProdutos(int totalProduto, int produto_encontrado,
                     while (getchar() != '\n');
                 }
 
-                if (escolher == 5) { break; }
+                if (escolher == 5) 
+                {
+                    return totalProduto = 0;
+                     break; 
+                }
             }
 
             // Escolhe o fornecedor pelo nome
@@ -322,7 +328,6 @@ int CadastrarProdutos(int totalProduto, int produto_encontrado,
                 }
 
                 if (sair == 0) { return totalProduto; break; }
-                return totalProduto;
             }
         }
     
@@ -330,7 +335,7 @@ int CadastrarProdutos(int totalProduto, int produto_encontrado,
 
 
 
-void entradaEstoque(int opcao, int receber_total_produtos, 
+void entradaEstoque(int opcao, int receber_novo_total_cadastro, 
                     int buscarProduto, int produto_encontrado, int receberQuantidade,  
                     struct Produto *pd)
 {
@@ -343,7 +348,7 @@ void entradaEstoque(int opcao, int receber_total_produtos,
         while (opcao != 3)
         {
             // Lista todos os produtos cadastrados (menos o último?)
-            for (int i = 0; i < receber_total_produtos - 1; i++)
+            for (int i = 0; i < receber_novo_total_cadastro; i++)
             {
                 printf("Código do produto: %d\n", pd->codigo[i]);
                 printf("Nome do produto: %s", pd->nome[i]);
@@ -351,13 +356,13 @@ void entradaEstoque(int opcao, int receber_total_produtos,
             }
 
             // Permite buscar um produto pelo código
-            for (int i = 0; i < receber_total_produtos; i++)
+            for (int i = 0; i < receber_novo_total_cadastro; i++)
             {
                 printf("Digite o código do produto\n");
                 scanf("%d", &buscarProduto);
 
                 // Percorre a lista de produtos para encontrar o código digitado
-                for (i = 0; i < receber_total_produtos; i++)
+                for (i = 0; i < receber_novo_total_cadastro; i++)
                 {
                     if (buscarProduto == pd->codigo[i])
                     {
@@ -437,7 +442,7 @@ void entradaEstoque(int opcao, int receber_total_produtos,
 }
 
 
-void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado, int buscarProduto, int receberQuantidade, struct Produto *pd)
+void saidaEstoque( int opcao, int receber_novo_total_cadastro, int produto_encontrado, int buscarProduto, int receberQuantidade, struct Produto *pd)
 {
     // Verifica se a opção escolhida é 3 (Saída de estoque)
    
@@ -449,7 +454,7 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
         while (opcao != 3)
         {
             // Exibe a lista de produtos cadastrados (menos os dois últimos?)
-            for (int i = 0; i < receber_total_produtos - 2; i++)
+            for (int i = 0; i < receber_novo_total_cadastro; i++)
             {
                 printf("Código do produto: %d\n", pd->codigo[i]);
                 printf("Nome do produto: %s\n", pd->nome[i]);
@@ -457,13 +462,13 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
             }
 
             // Permite buscar um produto pelo código
-            for (int i = 0; i < receber_total_produtos - 2; i++)
+            for (int i = 0; i < receber_novo_total_cadastro; i++)
             {
                 printf("Digite o código do produto\n");
                 scanf("%d", &buscarProduto);
 
                 // Busca pelo produto
-                for (i = 0; i < receber_total_produtos - 2; i++)
+                for (i = 0; i < receber_novo_total_cadastro; i++)
                 {
                     if (buscarProduto == pd->codigo[i])
                     {
@@ -510,8 +515,6 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
                             if (opcao == 3) { break; }
                         }
 
-                        if (opcao == 3) { break; }
-
                         // Alerta se o estoque atual estiver abaixo do mínimo
                         if (pd->estoque_atual[i] < pd->estoque_minimo[i])
                         {
@@ -520,6 +523,8 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
                         }
                     }
                 }
+
+                if (opcao == 3) {opcao = 3; break; }
             }
 
             // Caso não encontre o produto
@@ -548,7 +553,7 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
 }
 
 
-       void relatorios(int fornecedorEncontrado, int sair, int receber_total_produtos, int totalFornecedor, char escolha_fornecedor[30], int buscarProduto, int produto_encontrado, struct Produto *pd)
+       void relatorios(int fornecedorEncontrado, int sair, int receber_novo_total_cadastro, int totalFornecedor, char escolha_fornecedor[30], int buscarProduto, int produto_encontrado, struct Produto *pd)
 {
     // Função responsável por exibir relatórios de produtos e fornecedores
     // Recebe diversos parâmetros de controle e um ponteiro para a estrutura de produtos
@@ -562,7 +567,7 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
         while (sair != 0) // Loop principal do relatório: continua até o usuário digitar 0 para sair
         {
             // Primeiro, lista todos os produtos cadastrados
-            for (int i = 0; i < receber_total_produtos - 1; i++)
+            for (int i = 0; i < receber_novo_total_cadastro; i++)
             {
                 // Exibe informações gerais do produto
                 printf("Informações do Produto:\n");
@@ -588,14 +593,14 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
                 // Agora tenta exibir informações do fornecedor associado
                 // Observação: a lógica atual é falha, pois percorre todos os fornecedores e compara com "escolha_fornecedor"
                 // que não é alterado pelo usuário nesta função. Ou seja, provavelmente não encontra nada.
-                for (i = 0; i < totalFornecedor; i++)
+                for (int z = 0; z < totalFornecedor; z++)
                 {
                     // Se o fornecedor do produto for igual ao escolhido pelo usuário, mostra os dados
-                    if (strcmp(pd->fornecedor[i], escolha_fornecedor) == 0)
+                    if (strcmp(pd->fornecedor[z], escolha_fornecedor) == 0)
                     {
                         fornecedorEncontrado = 1;
                         printf("Fornecedor do Produto:\n");
-                        printf("Fornecedor: %s\n", pd->fornecedor[i]);
+                        printf("Fornecedor: %s\n\n", pd->fornecedor[z]);
                     }
                 }
 
@@ -614,7 +619,7 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
             if (buscarProduto == 0) { break; } // Se o usuário digitou 0, sai do loop principal
 
             // Busca o produto pelo código digitado
-            for (int i = 0; i < receber_total_produtos - 1; i++)
+            for (int i = 0; i < receber_novo_total_cadastro; i++)
             {
                 if (buscarProduto == pd->codigo[i]) // Produto encontrado
                 {
@@ -669,15 +674,15 @@ void saidaEstoque( int opcao, int receber_total_produtos, int produto_encontrado
 
             // Pergunta se o usuário quer sair ou continuar no relatório
             printf("0 - para sair\n");
-            printf("2 - para continuar\n");
+            printf("1 - para continuar\n");
             scanf("%d", &sair);
 
             // Validação para garantir que só aceita 0 ou 2
-            while (sair != 0 && sair != 2)
+            while (sair != 0 && sair != 1)
             {
                 printf("Opção inválida. Digite novamente:\n");
                 printf("0 - para sair\n");
-                printf("2 - para continuar\n");
+                printf("1 - para continuar\n");
                 scanf("%d", &sair);
             }
         }
@@ -1005,16 +1010,13 @@ int cadastrarFornecedores( int c, int sair,int receber_novo_total_fornecedores, 
                                 }
                                 else
                                 {
-                                    if (strcmp(ultimo_usuario, user->usuario[i]) == 0)
-                                    {
-                                        total_cadastro_usuarios--;
-                                        printf("Usuário removido com sucesso!\n");
-                                    }
-                                    else
-                                    {
-                                        receberInicio++;
-                                        printf("Usuário removido com sucesso!\n");
-                                    }
+                                   for(int z = remover; z < total_cadastro_usuarios; z++)
+                                   {
+                                     strcpy(user->usuario[z], user->usuario[z + 1]);
+                                     strcpy(user->senha[z], user->senha[z + 1]);
+                                   }
+                                   
+                                   total_cadastro_usuarios -= 1;
                                 }
                             }
                         }
@@ -1074,7 +1076,7 @@ int cadastrarFornecedores( int c, int sair,int receber_novo_total_fornecedores, 
 
 
 
-void alertaEstoque(int sair, int produto_encontrado, int receber_total_produtos, struct Produto *pd)
+void alertaEstoque(int sair, int produto_encontrado, int receber_novo_total_cadastro, struct Produto *pd)
 {
     
         sair = 1; // Controla o loop principal, iniciado como 1 para entrar no loop
@@ -1083,7 +1085,7 @@ void alertaEstoque(int sair, int produto_encontrado, int receber_total_produtos,
         while(sair != 0)
         {
             // Percorre todos os produtos, até receber_total_produtos - 1 (último índice é -1)
-            for(int i = 0; i < receber_total_produtos; i++)
+            for(int i = 0; i < receber_novo_total_cadastro; i++)
             {
                 
                 // Verifica se o estoque atual do produto está abaixo do estoque mínimo
